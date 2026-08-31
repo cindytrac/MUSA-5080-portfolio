@@ -4,22 +4,30 @@ title: "About Me"
 
 ## Background
 
-<!-- CHANGE THIS -->
+<!-- CHANGE THIS Write a few paragraphs about yourself here: where you came from before MUSA,
+what drew you to urban spatial analytics, and what you're hoping to do with it. -->
 
-Write a few paragraphs about yourself here: where you came from before MUSA,
-what drew you to urban spatial analytics, and what you're hoping to do with it.
+📍 New England-born and previously NYC-based. 
+
+👩🏻‍💻 I studied computer science and data science at *Worcester Polytechnic Institute*. I was trained as a high school technology/engineering teacher through WPI's Teacher Preparation Program. I worked as a software engineer for the past 3 years. 
+
+⭐️ I care deeply about information accessibility, --, and outreach. I currently sit on the Alumni Advisory Council for Girls Who Code. 
+
+🗺️ Through MUSA, I hope to bridge the intersection of data, 
+and apply this level of technical work to -- change 
+
 
 ## Skills
 
 <!-- CHANGE THIS: update this through the semester as it becomes true -->
 
-- **Languages & Tools:** R, Quarto, Git
-- **Spatial:** (add as you learn)
+- **Languages & Tools:** Python, Java, Javascript, HTML/CSS, SQL, R, Quarto, Git
+<!-- - **Spatial:** ArcGIS -->
 - **Data:** US Census / ACS via `tidycensus`
 
 ## Contact
 
 <!-- CHANGE THIS -->
 
-- Email: your-email@upenn.edu
-- GitHub: [@your-username](https://github.com/your-username)
+- Email: ctrac@upenn.edu
+- GitHub: [@cindytrac](https://github.com/cindytrac)

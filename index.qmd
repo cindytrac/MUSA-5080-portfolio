@@ -2,23 +2,23 @@
 title: "Home"
 ---
 
-# YOUR NAME HERE {#welcome}
+# Cindy Trac {#welcome}
 
 <!-- CHANGE THIS: replace with your own name above -->
 
-Welcome to my portfolio for **MUSA 5080: Public Policy Analytics** at the
+👋 Welcome to my portfolio for **MUSA 5080: Public Policy Analytics** at the
 University of Pennsylvania.
 
 This site documents my work in the Master of Urban Spatial Analytics program —
 weekly notes, course assignments, and a final project applying data analysis to
-urban policy questions.
+urban policy questions. 
 
 ## About Me
 
 <!-- CHANGE THIS: two or three sentences about yourself -->
 
 I'm a student in the MUSA program at Penn. My background is in
-[YOUR BACKGROUND], and I'm interested in [YOUR INTERESTS].
+computer science and data science. I have research experience in educational technologies and learning science. I have been working as a software engineer for the past 3 years. I'm interested in exploring the intersection of data and urban issues to create opportunities to expand information accessibility.
 
 ## What You'll Find Here
 
@@ -30,5 +30,5 @@ I'm a student in the MUSA program at Penn. My background is in
 
 <!-- CHANGE THIS -->
 
-- Email: your-email@upenn.edu
-- GitHub: [@your-username](https://github.com/your-username)
+- Email: ctrac@upenn.edu
+- GitHub: [@cindytrac](https://github.com/your-username)
