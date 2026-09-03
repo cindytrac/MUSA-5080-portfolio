@@ -26,17 +26,11 @@ The loop: **Edit → Save → Render → Commit → Push → Wait → Refresh**
 
 Anatomy of a .qmd:
 
-1. YAML
+1. YAML (delineated by - - -)
 
-- delineated by - - -
+2. Markdown .md (text written by you)
 
-2. Markdown .md
-
-- text written by you
-
-3. Code Chunks
-
-- delineated by ```
+3. Code Chunks (delineated by ```)
 
 ## Proving R Works
 

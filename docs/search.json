@@ -46,7 +46,7 @@
     "href": "weekly-notes/week-01.html#key-concepts",
     "title": "Week 1: Getting Set Up",
     "section": "Key Concepts",
-    "text": "Key Concepts\nThree places a file can live:\n\nMy computer — where I edit\nGitHub.com — where it’s stored\nMy live site — what the world sees\n\nThe loop: Edit → Save → Render → Commit → Push → Wait → Refresh\nwebsite = folder of html files (quarto) + computer that is always on (github)\nAnatomy of a .qmd:\n\nYAML\n\n\ndelineated by - - -\n\n\nMarkdown .md\n\n\ntext written by you\n\n\nCode Chunks\n\n\ndelineated by ```"
+    "text": "Key Concepts\nThree places a file can live:\n\nMy computer — where I edit\nGitHub.com — where it’s stored\nMy live site — what the world sees\n\nThe loop: Edit → Save → Render → Commit → Push → Wait → Refresh\nwebsite = folder of html files (quarto) + computer that is always on (github)\nAnatomy of a .qmd:\n\nYAML (delineated by - - -)\nMarkdown .md (text written by you)\nCode Chunks (delineated by ```)"
   },
   {
     "objectID": "weekly-notes/week-01.html#proving-r-works",
@@ -74,21 +74,21 @@
     "href": "about.html",
     "title": "About Me",
     "section": "",
-    "text": "📍 New England-born and previously NYC-based.\n👩🏻‍💻 I studied computer science and data science at Worcester Polytechnic Institute. I was trained as a high school technology/engineering teacher through WPI’s Teacher Preparation Program. I worked as a software engineer for the past 3 years.\n⭐️ I care deeply about information accessibility, –, and outreach. I currently sit on the Alumni Advisory Council for Girls Who Code.\n🗺️ Through MUSA, I hope to bridge the intersection of data, and apply this level of technical work to – change"
+    "text": "📍 New England-born and previously NYC-based.\n👩🏻‍💻 I studied computer science and data science at Worcester Polytechnic Institute. I was also trained as a high school technology/engineering teacher through WPI’s Teacher Preparation Program. I’ve worked as a software engineer for the past 3 years.\n⭐️ My interest in information accessibility and care for community outreach has manifested in various ways. I did undergraduate reserarch in learning science and educational technologies. I taught students technology, engineering, and computer science through programs like Girls Who Code and Engineering Ambassadors as well as in formal classrooms. I volunteer and am involved in outreach programs, both locally (HYPER and nationally (MITES). I currently sit on the Alumni Advisory Council for Girls Who Code.\n🗺️ Through MUSA, I hope to bridge the intersection of data, computer science, and urban policy to enable positive change in underserved communities by broadening access to data that impacts them."
   },
   {
     "objectID": "about.html#background",
     "href": "about.html#background",
     "title": "About Me",
     "section": "",
-    "text": "📍 New England-born and previously NYC-based.\n👩🏻‍💻 I studied computer science and data science at Worcester Polytechnic Institute. I was trained as a high school technology/engineering teacher through WPI’s Teacher Preparation Program. I worked as a software engineer for the past 3 years.\n⭐️ I care deeply about information accessibility, –, and outreach. I currently sit on the Alumni Advisory Council for Girls Who Code.\n🗺️ Through MUSA, I hope to bridge the intersection of data, and apply this level of technical work to – change"
+    "text": "📍 New England-born and previously NYC-based.\n👩🏻‍💻 I studied computer science and data science at Worcester Polytechnic Institute. I was also trained as a high school technology/engineering teacher through WPI’s Teacher Preparation Program. I’ve worked as a software engineer for the past 3 years.\n⭐️ My interest in information accessibility and care for community outreach has manifested in various ways. I did undergraduate reserarch in learning science and educational technologies. I taught students technology, engineering, and computer science through programs like Girls Who Code and Engineering Ambassadors as well as in formal classrooms. I volunteer and am involved in outreach programs, both locally (HYPER and nationally (MITES). I currently sit on the Alumni Advisory Council for Girls Who Code.\n🗺️ Through MUSA, I hope to bridge the intersection of data, computer science, and urban policy to enable positive change in underserved communities by broadening access to data that impacts them."
   },
   {
     "objectID": "about.html#skills",
     "href": "about.html#skills",
     "title": "About Me",
     "section": "Skills",
-    "text": "Skills\n\n\nLanguages & Tools: Python, Java, Javascript, HTML/CSS, SQL, R, Quarto, Git \nData: US Census / ACS via tidycensus"
+    "text": "Skills\n\n\nLanguages & Tools: Python, Java, Javascript, HTML/CSS, SQL, R, Quarto, Git, Tableau \nData: US Census / ACS via tidycensus"
   },
   {
     "objectID": "about.html#contact",
