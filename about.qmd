@@ -18,7 +18,7 @@ to enable positive change in underserved communities by broadening access to dat
 
 
 ## Skills
-
+ 
 <!-- CHANGE THIS: update this through the semester as it becomes true -->
 
 - **Languages & Tools:** Python, Java, Javascript, HTML/CSS, SQL, R, Quarto, Git, Tableau
