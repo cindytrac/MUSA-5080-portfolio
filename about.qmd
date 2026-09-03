@@ -11,7 +11,7 @@ what drew you to urban spatial analytics, and what you're hoping to do with it. 
 
 👩🏻‍💻 I studied computer science and data science at *Worcester Polytechnic Institute*. I was also trained as a high school technology/engineering teacher through WPI's Teacher Preparation Program. I've worked as a software engineer for the past 3 years. 
 
-⭐️ My interest in information accessibility and care for community outreach has manifested in various ways. I did undergraduate reserarch in learning science and educational technologies. I taught students technology, engineering, and computer science through programs like Girls Who Code and Engineering Ambassadors as well as in formal classrooms. I volunteer and am involved in outreach programs, both locally ([HYPER](https://hyperonline.org/) and nationally ([MITES](https://mites.mit.edu/)). I currently sit on the Alumni Advisory Council for Girls Who Code. 
+⭐️ My interest in information accessibility and care for community outreach has manifested in various ways. I did undergraduate reserarch in learning science and educational technologies. I taught students technology, engineering, and computer science through programs like Girls Who Code and Engineering Ambassadors as well as in formal classrooms. I volunteer and am involved in outreach programs, both locally ([HYPER](https://hyperonline.org/)) and nationally ([MITES](https://mites.mit.edu/)). I currently sit on the Alumni Advisory Council for Girls Who Code. 
 
 🗺️ Through MUSA, I hope to bridge the intersection of data, computer science, and urban policy 
 to enable positive change in underserved communities by broadening access to data that impacts them. 
