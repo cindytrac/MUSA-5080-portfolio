@@ -1,0 +1,341 @@
+---
+title: "Assignment 3 - Verify the Claim"
+subtitle: "Testing Claims of Alarming Census Poverty Rates in Philly"
+author: "Cindy Trac"
+date: today
+format:
+  html:
+    embed-resources: true
+    toc: true
+    code-fold: true
+execute:
+  warning: false
+  message: false
+---
+
+```{r}
+#| include: false
+library(tidyverse)
+library(tidycensus)
+library(ggplot2)
+library(dplyr)
+library(gt)
+library(sf)
+```
+
+## The Situation
+
+Journalists, agencies, and advocacy organizations publish claims about neighborhood change all the time. Most of those claims rest on American Community Survey (ACS) estimates. Very few of them report margins of error, test whether a change is statistically detectable, or acknowledge what the data cannot support.
+
+In this assignment, I verify claims about poverty rates and median household income in Philadelphia neighborhoods.
+
+## The Article and What It Claims
+
+Lubrano, Alfred. “New Census figures on Philly neighborhoods show inequality, high numbers of whites living in poverty.” WHYY / Philadelphia Inquirer, December 6, 2018. https://whyy.org/articles/new-census-figures-on-philly-neighborhoods-show-inequality-high-numbers-of-whites-living-in-poverty/
+
+This article compares the 2006–2010 and 2013–2017 ACS 5-year estimates and makes several specific claims about poverty rates and median household income in Philadelphia neighborhoods.
+
+1.  **"the city’s** formidable **26 percent poverty rate**"
+2.  "**Fairhill in North Philadelphia** registered a stunning **61 percent poverty rate.**"
+3.  The "neighborhood of **Eastwick** **in Southwest Philadelphia**, near Philadelphia International Airport, showed the **greatest poverty-rate increase of any community, rocketing from 12 percent during 2006-10 to 26 percent** in the newest survey."
+4.  **White poverty** throughout much of the city skyrocketed, **led by the Northeast neighborhood of Holmesburg**, which went from a **2** **percent poverty rate to 19 percent.**
+5.  The **median household income of Tioga-Nicetown** plummeted from **\$28,026 to \$17,493,** the largest drop in the city.
+
+## Part 1 - Reconstruct
+
+**We start our investigation by pulling this data from ACS that the article relies on.** The article makes claims that compare data from the 2017 ACS 5-year (2013-2017) and the 2010 (2006-2010). We will be using the ac5 (ACS 5-Year Survey). The time periods do not overlap.
+
+**We are pulling data at the tract level.** Note that census tracts are not neighborhoods. The report's numbers won't exactly match the article's numbers since we don't know how the article divided up tracts by neighborhood. We are guesstimating and making our own assumptions on what tracts fall into what neighborhood because the article does not say.
+
+**In order to calculate poverty rate and assess median household income data, we need the following variables:**
+
+- Total Population in Poverty Universe
+
+- Population Below Poverty Level
+
+- Population Below Poverty Level - White
+
+- Total Population
+
+- Median Household Income
+
+```{r}
+#| message: false
+#| warning: false
+
+# data for 2006-2010
+philly_tracts_2010 <- get_acs(
+  geography = "tract",
+  state = "PA",
+  county = "Philadelphia",
+  variables = c(
+    total_pop_pov_universe = "B17001_001",
+    pop_below_poverty_line = "B17001_002",
+    below_poverty_white = "B17001A_002",
+    total_pop = "B01003_001",
+    med_hh_income = "B19013_001"
+  ),
+  output = "wide",
+  geometry = TRUE,
+  year = 2010,
+  survey = "acs5"
+)
+
+# data for 2013-2017
+philly_tracts_2017 <- get_acs(
+  geography = "tract",
+  state = "PA",
+  county = "Philadelphia",
+  variables = c(total_pop_pov_universe = "B17001_001", #total population in poverty universe
+                pop_below_poverty_line = "B17001_002", #population below the pov level
+                below_poverty_white = "B17001A_002",
+                total_pop = "B01003_001",
+                med_hh_income = "B19013_001"),
+  output = "wide",
+  geometry = TRUE,
+  year = 2017,
+  survey = "acs5"
+)
+
+
+```
+
+After we pull all the necessary information, we can inspect the data and see if there are any missing values. In this case, 0s as values under the total population under poverty and population under the poverty line indicate that there are no individuals in those tracts that we can determine the poverty status for. This can be for a number of explainable reasonable like the tracts may overlap with places like airports. We will drop those rows.
+
+## Part 2 - Testing the Data
+
+Second, we'll test the data to see if it's statistically significant or not.
+
+**Calculate the poverty rate for each tract and its margin of error.** The poverty rate is the percentage of a population whose household income falls below the poverty line, which is set by the government and change by year. The census provides us with the information to be able to calculate this.
+
+```{r}
+philly_tracts_2010 <- philly_tracts_2010 %>%
+  mutate(
+    poverty_rate = 100 * pop_below_poverty_lineE / total_pop_pov_universeE
+  )
+
+# drop NA rows
+philly_tracts_2010 <- na.omit(philly_tracts_2010)
+
+# do the same for the other dataframe
+philly_tracts_2017 <- philly_tracts_2017 %>%
+  mutate(
+    poverty_rate = 100 * pop_below_poverty_lineE / total_pop_pov_universeE
+  )
+
+# drop NA rows
+philly_tracts_2017 <- na.omit(philly_tracts_2017)
+
+# taking a peek at the data on a map
+ggplot(philly_tracts_2010) +
+  geom_sf(aes(fill = poverty_rate), color = NA) +
+  scale_fill_viridis_c(labels = scales::percent) +
+  theme_void() +
+  labs(title = "Poverty Rate In Philadelphia Tracts, ACS 2006-2010 5-Year Estimates",
+       fill = NULL)
+
+```
+
+**Calculate the margin of error.** The margin of error gibes us a plus-or-minus range. This tells us how much the census survey results may differ from the views of the population. Remember that the ACS is a sample!
+
+```{r}
+philly_tracts_2010 <- philly_tracts_2010 %>%
+  mutate(
+    moe_prop = moe_prop(pop_below_poverty_lineE, total_pop_pov_universeE, pop_below_poverty_lineM, total_pop_pov_universeM)
+  )
+
+philly_tracts_2017 <- philly_tracts_2017 %>%
+  mutate(
+    moe_prop = moe_prop(pop_below_poverty_lineE, total_pop_pov_universeE, pop_below_poverty_lineM, total_pop_pov_universeM)
+)
+```
+
+**Compute the coefficient of variation and flag reliability.** The coefficient of variation measures the reliability of the data. High reliability (green circle) suggests high precision and consistency in the data (we want this!). Medium reliability (yellow circle) is typically sufficient for general use. Low reliability (red circle) reflects very low trustworthiness. As you'll see below, the majority of the tracts' poverty rate have a high reliability.
+
+```{r}
+
+# drop geometries 
+philly_tracts_2010 <- philly_tracts_2010 %>%
+  st_drop_geometry() 
+
+philly_tracts_2017 <- philly_tracts_2017 %>%
+  st_drop_geometry() 
+
+# calculate cv and make reliability table
+reliability_table_2017 <- philly_tracts_2017 %>%
+  mutate(
+    cv = case_when(TRUE ~ 100 * (moe_prop / 1.645) / poverty_rate),
+    dot = case_when(
+      cv < 12  ~ "🟢",
+      cv <= 40 ~ "🟡",
+      TRUE     ~ "🔴"
+    ),
+    flag = case_when(
+      is.na(cv) ~ NA_character_,
+      cv < 12 ~ "Reliable",
+      cv <= 40 ~ "Somewhat reliable",
+      TRUE ~ "Unreliable"
+    )
+  ) %>%
+  select(
+    GEOID,
+    dot,
+    NAME,
+    moe_prop,
+    poverty_rate,
+    cv,
+    flag
+  )
+
+
+reliability_table_2017 %>%
+  gt() %>%
+  fmt_number(
+    columns = c(moe_prop, poverty_rate),
+    decimals = 1
+  ) %>%
+  fmt_number(
+    columns = cv,
+    decimals = 1
+  ) %>%
+  cols_label(
+    GEOID = "GEOID",
+    dot = "",
+    NAME = "Name",
+    moe_prop = "Margin of error",
+    poverty_rate = "Poverty rate (%)",
+    cv = "CV (%)",
+    flag = "Reliability"
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = c(dot, cv, flag)
+  ) %>%
+  tab_header(
+    title = "Population Below 100% of the Poverty Level",
+    subtitle = "Philadelphia Tracts, ACS 2013–2017 5-year estimates"
+  ) %>%
+  tab_source_note(
+    "Reliability thresholds follow Jurjevich et al. (2018): CV < 12% reliable, 12–40% somewhat reliable, > 40% unreliable."
+  ) %>%
+  tab_options(
+    container.height = px(500),
+    container.overflow.y = "auto"
+  )
+```
+
+Here, I join the tables together since I start to compute change between the two periods of time.
+
+**Compute the change between the two periods and the margin of error of that change.** In order to refute or back up the claims made in the article, we need to look at the change between 2006–2010 and 2013–2017 in a statistical manner.
+
+```{r}
+
+# join tables
+philly_tract_combined <- left_join(philly_tracts_2017, philly_tracts_2010, by = "GEOID")
+
+#calculating diff in pov rate
+philly_tract_combined <- philly_tract_combined %>%
+  mutate(diff_poverty_rate = poverty_rate.y-poverty_rate.x)
+
+# calculating standard error
+philly_tract_combined <- philly_tract_combined %>%
+  mutate(SE2010 = (moe_prop.y*100)/1.645) %>%
+  mutate(SE2017 = (moe_prop.x*100)/1.645)
+
+# calculating standard error difference
+philly_tract_combined <- philly_tract_combined %>%
+  mutate(SE_diff = sqrt((SE2010^2) + (SE2017^2)))
+
+# calculating z-scores
+philly_tract_combined <- philly_tract_combined %>%
+  mutate(z_score = ((poverty_rate.y-poverty_rate.x)/SE_diff))
+
+philly_tract_combined <- philly_tract_combined %>%
+  mutate(
+    change   = poverty_rate.y-poverty_rate.x,
+    se_1     = (moe_prop.y*100) / 1.645,
+    se_2     = (moe_prop.x*100) / 1.645,
+    se_diff  = sqrt(se_1^2 + se_2^2),
+    moe_diff = se_diff * 1.645,
+    z        = change / se_diff,
+    significant = abs(z) > 1.645
+  )
+
+# visualize with error bars
+philly_tract_combined %>%
+  filter(significant) %>%
+  mutate( NAME.x = str_remove(NAME.x, " Philadelphia County, Pennsylvania")) %>%
+    ggplot(aes(x = reorder(NAME.x, diff_poverty_rate), y = diff_poverty_rate)) +
+    geom_col(aes(fill = diff_poverty_rate > 0)) +
+    geom_errorbar(aes(ymin = change - SE_diff,
+                      ymax = change + SE_diff), width = 0.2) +
+    geom_hline(yintercept = 0, linetype = "dashed") +
+    coord_flip() +
+  theme_minimal() +
+    theme(axis.text.y = element_text(size = 4)) +
+    labs(title = "Statistically Significant Change in Poverty Rate",
+         subtitle = "2013–2017 vs 2006–2010, ACS 5-year estimates for Philadelphia tracts",
+         x = NULL, y = "Change in people below poverty level")
+
+```
+
+A few of the claims can be categorized as Cannot Be Determined based on preliminary calculations as seen below. From a quick look at these numbers, we can see it doesn't line up with the numbers that are presented in the article. This may be because we don't know the exact tracts used for each neighborhoods. We would need more information.
+
+**Calculating City's Poverty Rate**
+
+```{r}
+city_poverty_rate_2010 <- with(
+  philly_tracts_2010,
+  100 * sum(pop_below_poverty_lineE) /
+    sum(total_pop_pov_universeE)
+)
+
+city_poverty_rate_2017 <- with(
+  philly_tracts_2017,
+  100 * sum(pop_below_poverty_lineE) /
+    sum(total_pop_pov_universeE)
+)
+```
+
+**Difference in Median Income**
+
+```{r}
+philly_tract_combined <- philly_tract_combined %>% mutate(diff_med_hh_income = med_hh_incomeE.x-med_hh_incomeE.y)
+```
+
+## Part 3 - Sorting the Claims
+
+From the results of this report, we can sort the article's claims into three buckets:
+
+***SUPPORTED***
+
+- Claim 2 - "**Fairhill in North Philadelphia** registered a stunning **61 percent poverty rate.**"
+
+  - Fairhill, Philadelphia roughly corresponds to Census Tract 176.01. The calculated poverty rate for this tract was an estimated 63.36% with a margin of error of 11.76%. The coefficient of variation falls under the reliable category (based on Jurjevich et al. (2018) thresholds).
+
+- Claim 1 - "the city’s formidable **26 percent poverty rate**"
+
+  - When you calculate the poverty rate of the entire city by dividing the sum of everyone under the poverty line by total population of people in the poverty universe, you get 25.8%, which does round up to 26%.
+
+***NOT SUPPORTED***
+
+- Claim 5 - The **median household income of Tioga-Nicetown** plummeted from **\$28,026 to \$17,493,** the largest drop in the city.
+
+  - Tioga-Nicetown, Philadelphia corresponds to Census Tract 204.
+
+  - The calculation shows that there are tracts that have a larger drop in median household income. The largest drop in median household income happened in Tract 56 with an estimated difference of \$24,967.
+
+***CANNOT BE DETERMINED***
+
+- Claim 4 - **White poverty** throughout much of the city skyrocketed, **led by the Northeast neighborhood of Holmesburg**, which went from a **2** **percent poverty rate to 19 percent.**
+
+  - Holmesburg, Philadelphia roughly corresponds to Census Tract 329. This discrepancy in poverty rates to what was named in the article suggests that we are not considering the same tracts. In order to do a more thorough analysis, we would need to know what tracts the article used for Holmesburg. Holmesburg is also located in the area with a correctional facility and a park along the waterfront. Depending on where you draw the boundary for this area, it can drastically change the estimated population and therefore the poverty rate.
+
+- Claim 3 - The "neighborhood of **Eastwick** **in Southwest Philadelphia**, near Philadelphia International Airport, showed the **greatest poverty-rate increase of any community, rocketing from 12 percent during 2006-10 to 26 percent** in the newest survey."
+
+  - Eastwick roughly corresponds to Tract 9809, which overlaps with the Philadelphia International Airport. There is an estimated population of 0 for this Tract. In order to further investigate, we need to know what tracts the article considered for Eastwick.
+
+## Part 4 - Rewriting One of the Article's Central Paragraph
+
+Fairhill is the poorest neighborhood in Philly. It has an estimated poverty rate of 63.36% with a margin of error of 11.76%. The median household income is estimated to be \$13,353 with a margin of error of \$3,905. These seem like very alarming figures. However, this did not happen overnight and it doesn't necessarily reflect the trajectory of the entire city. Historically, Fairhill was a very industrial part of Philly, a manufacturing hub anchored by Germantown Avenue. To lower cost, manufacturing jobs eventually moved away from the city or even overseas. According to Crossroads Philly, it was this economic collapse that has laid the conditions of what we call Fairhill today. While the statistic that Fairhill (or at least an estimation of the census tracts that make it up) has an alarmingly high poverty rate, we must look at it with context.
+

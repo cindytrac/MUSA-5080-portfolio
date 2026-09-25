@@ -12,7 +12,6 @@ execute:
   message: false
 ---
 
-
 ## Setup
 
 ```{r}
@@ -22,14 +21,11 @@ library(tidycensus)
 
 ## The question
 
-Every number the American Community Survey publishes is an estimate drawn from a
-sample, not a count. That means every number comes with a margin of error — a
-statement about how wrong it might be.
+Every number the American Community Survey publishes is an estimate drawn from a sample, not a count. That means every number comes with a margin of error — a statement about how wrong it might be.
 
 Most people ignore it. In this assignment, we won't.
 
-**In this analysis, I look at total commuters (travel time table) across counties in Massachusetts (MA), and
-ask which communities we measure most and least reliably.** Commuting data (and derivatives of it like ridership information) can dictate where funding goes for transportation infrastructure. This impacts not only a rider's commute to work, but how they get anywhere in their community.
+**In this analysis, I look at total commuters (travel time table) across counties in Massachusetts (MA), and ask which communities we measure most and least reliably.** Commuting data (and derivatives of it like ridership information) can dictate where funding goes for transportation infrastructure. This impacts not only a rider's commute to work, but how they get anywhere in their community.
 
 ## Choosing what to measure
 
@@ -61,9 +57,7 @@ head(county_data)
 
 ## How big is the margin of error?
 
-A margin of error of 3,000 means something very different for an estimate of 20,000
-than for an estimate of 200,000. To compare across places, we need it as a
-percentage.
+A margin of error of 3,000 means something very different for an estimate of 20,000 than for an estimate of 200,000. To compare across places, we need it as a percentage.
 
 ```{r}
 county_data <- county_data %>%
@@ -79,9 +73,7 @@ county_data %>%
   head(10)
 ```
 
-**Dukes County is the least reliable county.
-It has the largest margin of error relative to its estimate (calculated as moe_pct) of 9.87%.**
-
+**Dukes County is the least reliable county. It has the largest margin of error relative to its estimate (calculated as moe_pct) of 9.87%.**
 
 ## Sorting counties into reliability categories
 
@@ -96,21 +88,17 @@ county_data <- county_data %>%
 count(county_data, reliability)
 ```
 
+**Originally when I had "high confidence" as moe_pct \< 5, almost all the counties (12 of 14) fell into that category. Because of this, I changed the variable split to be:**
 
-**Originally when I had "high confidence" as moe_pct < 5, almost all the counties (12 of 14) fell into that category. Because of this, I changed the variable split to be:**
-  
-**moe_pct < 5  ~ "High confidence"**
+**moe_pct \< 5 \~ "High confidence"**
 
-**moe_pct < 10 ~ "Moderate"**
+**moe_pct \< 10 \~ "Moderate"**
 
-**This gave a more distributed split of 9 high confidence, 4 moderate, and 1 low confidence. **
-  
-
+**This gave a more distributed split of 9 high confidence, 4 moderate, and 1 low confidence.**
 
 ## Is the margin of error bigger in small places?
 
-To answer this we need population and our variable side by side, in the same row.
-That means a **wide** pull.
+To answer this we need population and our variable side by side, in the same row. That means a **wide** pull.
 
 ```{r}
 county_wide <- get_acs(
@@ -125,7 +113,6 @@ county_wide <- get_acs(
 
 head(county_wide)
 ```
-
 
 ```{r}
 county_wide <- county_wide %>%
@@ -150,15 +137,10 @@ county_wide %>%
 
 **The average population of high-confidence counties (579779 people) is higher than the average population of moderate counties (17525 people). A general pattern seems to be that the higher the population of a county, the more lower its margin of error.**
 
-
 ## What this means for policy
 
-**The data we are looking at comes from the ACS, which is a sample. The smaller the place, the smaller the sample we'll be able to get.** Both Nantucket and Duke County consists of small islands off the southeastern coast of Massachusetts. Nantucket has an estimated population of 14299 and Duke County has an estimated 20751. Compared to Middlesex County with an estimated population of 1622896, it is not surprising that **the communities we know the least about are Nantucket and Dukes County.** They have the largest margin of error percentages (moe_pct), 5.66% and 9.87% respectively. This is at least 2.19% more than the next largest moe_pct and almost 5% more than Middlsex County, which has the smallest moe_pct. This is in part because of how small Nantucket and Duke County are. 
+**The data we are looking at comes from the ACS, which is a sample. The smaller the place, the smaller the sample we'll be able to get.** Both Nantucket and Duke County consists of small islands off the southeastern coast of Massachusetts. Nantucket has an estimated population of 14299 and Duke County has an estimated 20751. Compared to Middlesex County with an estimated population of 1622896, it is not surprising that **the communities we know the least about are Nantucket and Dukes County.** They have the largest margin of error percentages (moe_pct), 5.66% and 9.87% respectively. This is at least 2.19% more than the next largest moe_pct and almost 5% more than Middlsex County, which has the smallest moe_pct. This is in part because of how small Nantucket and Duke County are.
 
-**Treating every county's number as equally certain ignores differences in population, size, community context, and more.** If a MA state agency were to allocate funding using the total estimate for travel time to work in the ACS, it would affect each county differently.  In this analysis, Nantucket and Duke County could be negatively affected because of how different they are from the rest of Massachusetts. In addition, Nantucket and Dukes County are popular summer vacation spots. The significant summer tourism can impact commute times, both in how long it takes someone to get to work and also what work they are doing. In the off-season, residents may have to travel off-island for work. This requires either a plane or ferry ride, as there are no bridges that connect to either county's islands. Nantucket and Dukes County residents have to deal with this unconventional commute year-round. The census does not take this into consideration. 
+**Treating every county's number as equally certain ignores differences in population, size, community context, and more.** If a MA state agency were to allocate funding using the total estimate for travel time to work in the ACS, it would affect each county differently. In this analysis, Nantucket and Duke County could be negatively affected because of how different they are from the rest of Massachusetts. In addition, Nantucket and Dukes County are popular summer vacation spots. The significant summer tourism can impact commute times, both in how long it takes someone to get to work and also what work they are doing. In the off-season, residents may have to travel off-island for work. This requires either a plane or ferry ride, as there are no bridges that connect to either county's islands. Nantucket and Dukes County residents have to deal with this unconventional commute year-round. The census does not take this into consideration.
 
 **We cannot do right by our communities if we take numbers only at face value.**
-
-
-
-

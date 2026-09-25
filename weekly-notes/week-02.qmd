@@ -8,11 +8,49 @@ date: 2026-09-04
 
 <!-- CHANGE THIS: replace with your own notes -->
 
-First blue-book quiz. 
+First blue-book quiz. dpylr and using a pipe to string functions together. Census data - the good (tidyverse!), the bad (ACS 1-year survey), and the not-with-us-any-longer (ACS 5-year survey).
 
 ## Key Concepts
 
-Three places a file can live:
+**Packages - dplyr, tidycensus**
+
+```{r}
+#install.packages("dplyr")   # only need to do once! (like buying the book)
+
+library(dplyr)              # load the library you need to use (taking book off the shelf)
+library(tidycensus)
+```
+
+**Dataframe = Table = Tibble**
+(tibble in dplyr = nicer, prints prettier)
+
+**Functions**
+
+```{r}
+#filter()        # picks row, filteR Row
+#select()        # picks cols, seleCt Col
+#mutate()        # add new computed column
+#arrange()       # change order of rows (asc, desc)
+#group_by()      # many rows become few
+#summarize()
+```
+
+**The Census**
+
+Previously: Decennial Census (long form) = 10 years, 10 questions
+Now: American Commmunity Survey (ACS) = created in 2005, 3% of households are surveyed (this sample is used to come up with estimate for population)
+
+3 Types of ACS
+1. 1-year ACS 
+Less than 65k places are surveyed, making it fairly useless!
+
+2. 3-year ACS 
+Dead! Doesn't exist anymore!
+
+3. 5-year ACS
+This is the one we use. Five year average. 
+
+
 
 1. **My computer** — where I edit
 2. **GitHub.com** — where it's stored
@@ -48,16 +86,6 @@ sessionInfo()$R.version$version.string
 
 ## Reflection
 
-<!-- CHANGE THIS: 3-4 sentences -->
-
-What I want out of this course:
-
-- I want to do applied analysis of public policy issues.
-- Get better at communicating my data findings. 
-
-One thing I'm nervous about:
-
-- Because of my previous technical background, I want to make sure that I am still technically challenging myself throughout the semester. 
 
 ## Questions I Still Have
 
