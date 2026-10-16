@@ -1,6 +1,8 @@
 # load the libraries
 library(tidyverse)
 library(tidycensus)
+library(ggplot2)
+library(dplyr)
 
 # Part 1 — Reconstruct
 # Pull the ACS data the article appears to rely on. Document:
@@ -145,6 +147,74 @@ philly_tract_combined <- philly_tract_combined %>%
 philly_tract_combined <- philly_tract_combined %>%
   mutate(z_score = ((poverty_rate.y-poverty_rate.x)/SE_diff))
 
+philly_tract_combined <- philly_tract_combined %>%
+  mutate(diff_poverty_rate = poverty_rate.y-poverty_rate.x)
+
+plot_data <- philly_tracts_2010 %>%
+  filter(!is.na(poverty_rate), !is.na(poverty_rate_moe)) %>%
+  slice_max(poverty_rate, n = 20) %>%
+  mutate(GEOID = reorder(GEOID, poverty_rate))
+
+ggplot(philly_tracts_2010, aes(
+  x = reorder(GEOID, poverty_rate),
+  y = poverty_rate
+)) +
+  geom_errorbar(
+    aes(
+      ymin = poverty_rate - moe_prop,
+      ymax = poverty_rate + moe_prop
+    ),
+    width = 0.25
+  ) +
+  geom_point(size = 2) +
+  coord_flip() +
+  labs(
+    x = "Philly census tract",
+    y = "Poverty rate (%)"
+  ) +
+  theme_minimal()
+
+m  <- aggregate(len ~ dose, data = ToothGrowth, FUN = mean)
+s  <- aggregate(len ~ dose, data = ToothGrowth, FUN = sd)
+df <- data.frame(dose = factor(m$dose), len = m$len, sd = s$len)
+
+df <- philly_tracts_2010 %>%
+  st_drop_geometry() %>%
+  filter(
+    !is.na(poverty_rate),
+    !is.na(poverty_rate_moe)
+  ) %>%
+  mutate(
+    tract = factor(GEOID)
+  )
+
+ggplot(df, aes(x = tract, y = poverty_rate)) +
+  geom_col(fill = "#3a86d4", alpha = 0.7) +
+  geom_errorbar(
+    aes(
+      ymin = poverty_rate - poverty_rate_moe,
+      ymax = poverty_rate + poverty_rate_moe
+    ),
+    width = 0.2
+  ) +
+  labs(
+    x = "Philadelphia census tract",
+    y = "Poverty rate (%)",
+    title = "Poverty Rate by Philadelphia Census Tract",
+    subtitle = "2006–2010 ACS 5-year estimates with 90% margins of error"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
+
+ggplot(df, aes(x = dose, y = len)) +
+  geom_col(fill = "#3a86d4", alpha = 0.7) +
+  geom_errorbar(aes(ymin = len - sd, ymax = len + sd), width = 0.2) +
+  labs(x = "Dose (mg/day)", y = "Tooth length (mean ± SD)") +
+  theme_minimal()
+
 
 %>%
   mutate(signigicant = case_when(
@@ -154,7 +224,8 @@ philly_tract_combined <- philly_tract_combined %>%
   )
 
 
-
+  philly_tract_combined <- philly_tract_combined %>%
+    mutate(diff_med_hh_income = med_hh_incomeE.x-med_hh_incomeE.y)
 
 
 #
@@ -170,9 +241,9 @@ reliability_table %>%
   fmt_number(columns = cv, decimals = 1) %>%
   cols_label(
     dot      = "",
-    NAME     = "County",
-    estimate = "Estimate",
-    moe      = "MOE",
+    NAME     = "Name",
+    estimate = "poverty_rate",
+    moe      = "moe_prop",
     cv       = "CV (%)",
     flag     = "Reliability"
   ) %>%
@@ -184,6 +255,48 @@ reliability_table %>%
   tab_source_note(
     "Reliability thresholds follow Jurjevich et al. (2018): CV < 12% reliable, 12–40% somewhat reliable, > 40% unreliable."
   )
+
+
+## Create a fancy reliability table like in the paper:
+
+library(gt)
+
+reliability_table <- philly_tracts_2017 %>%
+  mutate(
+    cv = (moe_prop / 1.645) / poverty_rate * 100,
+    dot = case_when(
+      cv < 12  ~ "🟢",
+      cv <= 40 ~ "🟡",
+      TRUE     ~ "🔴"
+    ),
+    flag = case_when(
+      cv < 12  ~ "Reliable",
+      cv <= 40 ~ "Somewhat reliable",
+      TRUE     ~ "Unreliable"
+
+  ))
+
+reliability_table %>%
+  gt() %>%
+  fmt_number(columns = c(poverty_rate, moe_prop), decimals = 0) %>%
+  fmt_number(columns = cv, decimals = 1) %>%
+  cols_label(
+    dot      = "",
+    NAME     = "Name",
+    estimate = "poverty_rate",
+    moe      = "moe_prop",
+    cv       = "CV (%)",
+    flag     = "Reliability"
+  ) %>%
+  cols_align(align = "center", columns = dot) %>%
+  tab_header(
+    title    = "Population below 100% of the poverty level",
+    subtitle = "New York counties, ACS 2023 5-year estimates"
+  ) %>%
+  tab_source_note(
+    "Reliability thresholds follow Jurjevich et al. (2018): CV < 12% reliable, 12–40% somewhat reliable, > 40% unreliable."
+  )
+
 philly_tracts <- st_left_join(philly_tracts_2017, philly_tracts_2010, by="GEOID")
 
 
@@ -195,3 +308,77 @@ ggplot(philly_tracts_2010) +
   theme_void() +
   labs(title = "Poverty Rate In Philadelphia Tracts",
        fill = NULL)
+
+# Visualize with error bars
+poverty_tested %>%
+  filter(significant) %>%
+  mutate(Name.x)) %>%
+  ggplot(aes(x = reorder(Name.x, change), y = change)) +
+  geom_col(aes(fill = change > 0)) +
+  geom_errorbar(aes(ymin = change - moe_diff,
+                    ymax = change + moe_diff), width = 0.3) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Statistically significant change in poverty count",
+       subtitle = "2013–2017 vs 2006–2010, ACS 5-year estimates",
+       x = NULL, y = "Change in people below poverty level")
+
+library(dplyr)
+library(gt)
+
+reliability_table <- philly_tracts_2017 %>%
+  mutate(
+    cv = case_when(TRUE ~ 100 * (moe_prop / 1.645) / poverty_rate),
+    dot = case_when(
+      cv < 12  ~ "🟢",
+      cv <= 40 ~ "🟡",
+      TRUE     ~ "🔴"
+    ),
+    flag = case_when(
+      is.na(cv) ~ NA_character_,
+      cv < 12 ~ "Reliable",
+      cv <= 40 ~ "Somewhat reliable",
+      TRUE ~ "Unreliable"
+    )
+  ) %>%
+  select(
+    GEOID,
+    dot,
+    NAME,
+    moe_prop,
+    poverty_rate,
+    cv,
+    flag
+  )
+
+reliability_table %>%
+  gt() %>%
+  fmt_number(
+    columns = c(moe_prop, poverty_rate),
+    decimals = 1
+  ) %>%
+  fmt_number(
+    columns = cv,
+    decimals = 1
+  ) %>%
+  cols_label(
+    GEOID = "GEOID",
+    dot = "",
+    NAME = "Name",
+    moe_prop = "Margin of error",
+    poverty_rate = "Poverty rate (%)",
+    cv = "CV (%)",
+    flag = "Reliability"
+  ) %>%
+  cols_align(
+    align = "center",
+    columns = c(dot, cv, flag)
+  ) %>%
+  tab_header(
+    title = "Population Below 100% of the Poverty Level",
+    subtitle = "Philadelphia Tracts, ACS 2013–2017 5-year estimates"
+  ) %>%
+  tab_source_note(
+    "Reliability thresholds follow Jurjevich et al. (2018): CV < 12% reliable, 12–40% somewhat reliable, > 40% unreliable."
+  )

@@ -35,7 +35,7 @@ Lubrano, Alfred. “New Census figures on Philly neighborhoods show inequality, 
 
 This article compares the 2006–2010 and 2013–2017 ACS 5-year estimates and makes several specific claims about poverty rates and median household income in Philadelphia neighborhoods.
 
-1.  **"the city’s** formidable **26 percent poverty rate**"
+1.  **the city’s** formidable **26 percent poverty rate**
 2.  "**Fairhill in North Philadelphia** registered a stunning **61 percent poverty rate.**"
 3.  The "neighborhood of **Eastwick** **in Southwest Philadelphia**, near Philadelphia International Airport, showed the **greatest poverty-rate increase of any community, rocketing from 12 percent during 2006-10 to 26 percent** in the newest survey."
 4.  **White poverty** throughout much of the city skyrocketed, **led by the Northeast neighborhood of Holmesburg**, which went from a **2** **percent poverty rate to 19 percent.**
@@ -338,4 +338,3 @@ From the results of this report, we can sort the article's claims into three buc
 ## Part 4 - Rewriting One of the Article's Central Paragraph
 
 Fairhill is the poorest neighborhood in Philly. It has an estimated poverty rate of 63.36% with a margin of error of 11.76%. The median household income is estimated to be \$13,353 with a margin of error of \$3,905. These seem like very alarming figures. However, this did not happen overnight and it doesn't necessarily reflect the trajectory of the entire city. Historically, Fairhill was a very industrial part of Philly, a manufacturing hub anchored by Germantown Avenue. To lower cost, manufacturing jobs eventually moved away from the city or even overseas. According to Crossroads Philly, it was this economic collapse that has laid the conditions of what we call Fairhill today. While the statistic that Fairhill (or at least an estimation of the census tracts that make it up) has an alarmingly high poverty rate, we must look at it with context.
-
