@@ -2,7 +2,7 @@
 title: "Assignment 3 - Verify the Claim"
 subtitle: "Testing Claims of Alarming Census Poverty Rates in Philly"
 author: "Cindy Trac"
-date: today
+date: 9/25/26
 format:
   html:
     embed-resources: true
