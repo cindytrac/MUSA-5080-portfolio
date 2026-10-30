@@ -1,0 +1,75 @@
+---
+title: "Week 7 - Spatial Autocorrelation in Errors"
+description: ""
+date: 2026-10-16
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## What We Did
+
+First blue-book quiz. dpylr and using a pipe to string functions
+together. Census data - the good (tidyverse!), the bad (ACS 1-year
+survey), and the not-with-us-any-longer (ACS 5-year survey).
+
+## Key Concepts
+
+**Reading a Logged Predictor**
+
+Example: tract-level rent on log of median income estimated rent = β0 +
+210\*log(income)
+
+β̂ reading = 1% increase in income comes with 210/100 = \$2.10 more in
+rent ŷ reading = lets model bend so it doesn't overpredict
+
+*Rule* = log X, keep Y in dollars: β / 100 = change in Y for a 1% change
+in X.
+
+**Broken Fold**
+
+Problem: One small district has all of its tracts in the test fold. So,
+when that model was trained, it never saw that level and therefore it
+can't predict it.
+
+Fix: Merge small groups BEFORE cross-validation.
+
+**Price Prediction Competition - Moving from Tracts to Houses**
+
+- New unit and shape, but same tools.
+- Not every sale is a sale. For instance, a sale price of \$1 may just
+  mean a transfer of property.
+
+**Moran's I** Assesses spatial autocorrelation in a dataset. When I am
+above average, are my neighbors above average too? 
+
+Positive residual -
+we UNDER-predicted that house. 
+
+Negative residual - we OVER-predicted
+that house. (negative has no O, oppo)
+
+*Reading Moran's I*
+
+| I | Pattern | For our clusters |
+|-------------------------|-------------------------|-----------------------|
+| near +1 | similar values cluster | the model is missing something about the place |
+| near 0 | no spatial pattern | the errors look like noise in space |
+| near -1 | neighbors differ | rare for errors; check your weights |
+
+*Is the I luck?*
+ moran.mc shuffles the residuals across houses 499 times. 
+ If the real I beats almost all the shuffles, the clustering isn't luck 
+
+*Clustered errors are features you haven't built yet*
+If Moran’s I is high, ask what’s true about those places that the model doesn’t know:
+
+- An amenity or disamenity you haven’t measured → spatial feature
+- Something about the whole neighborhood → neighborhood fixed effect
+- A relationship that differs by place → interaction
+
+Then refit, recompute I, and log both numbers.
+
+Rule = Spatial features od X, never Y. Crime/etc near house fine, prices near the house are not. 
+
+
