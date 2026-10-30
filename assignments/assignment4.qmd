@@ -2,6 +2,7 @@
 title: "Assignment: Building Features, Watching What Happens"
 subtitle: "MUSA 5080 · Integrates Weeks 1–5"
 author: "Cindy Trac"
+date: 10/16/26
 format:
   html:
     toc: true
